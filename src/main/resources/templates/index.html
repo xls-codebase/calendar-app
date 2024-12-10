@@ -16,15 +16,15 @@
             <div class="col-sm-3">
                 <nav>
                     <ul class="nav flex-sm-column float-end">
-                        <li class="nav-item"><a class="nav-link" href="#">Menu Item 1 </a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Menu Item 2</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Menu Item 3</a></li>
+                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 1 </a></li>
+                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 2</a></li>
+                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 3</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="col-sm-6 bg-body">
+                <!-- dynamic Event form begin -->
                 <section class="p-4">
-                    <div>
                         <form>
                             <div class="row">
                                 <div class="col-lg-3">
@@ -39,11 +39,9 @@
                                     <label for="set-reminder" class="form-label">Erinnerung</label>
                                     <select class="form-control" id="set-reminder" name="set-reminder">
                                         <option value="">bitte auswählen</option>
-                                        <option value="ONE_DAY">1 Tag</option>
-                                        <option value="TWO_DAYS">2 Tage</option>
-                                        <option value="FOUR_DAYS">4 Tage</option>
-                                        <option value="ONE_WEEK">1 Woche</option>
-                                        <option value="TWO_WEEKS">2 Wochen</option>
+                                        <option th:each="reminder : ${T(at.microlab.calendar_app.event.TimeOfReminder).values()}"
+                                                th:value="${reminder.name()}"
+                                                th:text="${reminder.displayText}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -51,9 +49,12 @@
                                 <button type="submit" class="btn btn-link">Speichern</button>
                             </div>
                         </form>
-                    </div>
                 </section>
-                <section class="p-4 table-responsive">
+                <!-- dynamic Event form end -->
+
+                <!-- dynamic event list begin -->
+                <section th:if="${#lists.isEmpty(events)}" class="p-4"><p class="text-center">Es gibt noch keine gespeicherten Events.</p></section>
+                <section th:unless="${#lists.isEmpty(events)}" class="p-4 table-responsive">
                     <table class="table table-borderless">
                         <tr>
                             <th >Datum</th>
@@ -61,32 +62,15 @@
                             <th>Erinnerung</th>
                             <th>Aktion</th>
                         </tr>
-                        <tr>
-                            <td>31.12.2024</td>
-                            <td>Hochzeitstag</td>
-                            <td>2 Tage</td>
-                            <td><button type="button" class="btn btn-link">Bearbeiten</button> |<button type="button" class="btn btn-link">Löschen</button></td>
-                        </tr>
-                        <tr>
-                            <td>31.12.2024</td>
-                            <td>Hochzeitstag</td>
-                            <td>2 Tage</td>
-                            <td><button type="button" class="btn btn-link">Bearbeiten</button> |<button type="button" class="btn btn-link">Löschen</button></td>
-                        </tr>
-                        <tr>
-                            <td>31.12.2024</td>
-                            <td>Hochzeitstag</td>
-                            <td>2 Tage</td>
-                            <td><button type="button" class="btn btn-link">Bearbeiten</button> |<button type="button" class="btn btn-link">Löschen</button></td>
-                        </tr>
-                        <tr>
-                            <td>31.12.2024</td>
-                            <td>Hochzeitstag</td>
-                            <td>2 Tage</td>
-                            <td><button type="button" class="btn btn-link">Bearbeiten</button> |<button type="button" class="btn btn-link">Löschen</button></td>
+                        <tr th:each="event: ${events}">
+                            <td th:text="${#temporals.format(event.date, 'dd.MM.YYYY')}" class="align-middle"></td>
+                            <td th:text="${event.description}" class="align-middle"></td>
+                            <td th:text="${event.timeOfReminder.displayText}" class="align-middle"></td>
+                            <td th:attr="data-event-id=${event.eventId}" class="align-middle"><button type="button" class="btn btn-link">Bearbeiten</button> | <button type="button" class="btn btn-link">Löschen</button></td>
                         </tr>
                     </table>
                 </section>
+                <!-- dynamic event list end -->
                 <section class="p-4">
                     <div>
                         <img src="https://picsum.photos/200/150" class="float-lg-end m-2" alt="" />
