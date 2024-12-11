@@ -16,20 +16,19 @@
             <div class="col-sm-3">
                 <nav>
                     <ul class="nav flex-sm-column float-end">
-                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 1 </a></li>
-                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 2</a></li>
-                        <li class="nav-item d-lg-block"><a class="nav-link" href="#">Menu Item 3</a></li>
+                        <li class="nav-item d-lg-block"><a class="nav-link" href="/">Events</a></li>
+                        <li class="nav-item d-lg-block"><a class="nav-link" href="static">Static Content</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="col-sm-6 bg-body">
                 <!-- dynamic Event form begin -->
                 <section class="p-4">
-                        <form>
+                        <form id="event-form">
                             <div class="row">
                                 <div class="col-lg-3">
                                     <label for="event-date" class="form-label">Datum</label>
-                                    <input type="date" class="form-control" id="event-date" name="event-date" />
+                                    <input type="date" class="form-control" id="event-date" name="event-date" required />
                                 </div>
                                 <div class="col-lg">
                                     <label for="event-description" class="form-label">Bezeichnung</label>
@@ -37,15 +36,16 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <label for="set-reminder" class="form-label">Erinnerung</label>
-                                    <select class="form-control" id="set-reminder" name="set-reminder">
+                                    <select class="form-select" id="set-reminder" name="set-reminder">
                                         <option value="">bitte auswählen</option>
                                         <option th:each="reminder : ${T(at.microlab.calendar_app.event.TimeOfReminder).values()}"
-                                                th:value="${reminder.name()}"
+                                                th:value="${reminder.displayText}"
                                                 th:text="${reminder.displayText}"></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="d-grid justify-content-md-end my-2">
+                                <input type="text" id="event-id" name="event-id" value="" class="form-control d-none"/>
                                 <button type="submit" class="btn btn-link">Speichern</button>
                             </div>
                         </form>
@@ -53,38 +53,30 @@
                 <!-- dynamic Event form end -->
 
                 <!-- dynamic event list begin -->
-                <section th:if="${#lists.isEmpty(events)}" class="p-4"><p class="text-center">Es gibt noch keine gespeicherten Events.</p></section>
-                <section th:unless="${#lists.isEmpty(events)}" class="p-4 table-responsive">
-                    <table class="table table-borderless">
+                <section th:classappend="${!#lists.isEmpty(events)} ? 'd-none'" id="empty-event-list" class="p-4"><p id="" class="text-center">Es gibt noch keine gespeicherten Events.</p></section>
+                <section th:classappend="${#lists.isEmpty(events)} ? 'd-none'" id="event-list" class="p-4 table-responsive">
+                    <table id="events-table" class="table table-borderless">
                         <tr>
                             <th >Datum</th>
                             <th>Bezeichnung</th>
                             <th>Erinnerung</th>
                             <th>Aktion</th>
                         </tr>
-                        <tr th:each="event: ${events}">
-                            <td th:text="${#temporals.format(event.date, 'dd.MM.YYYY')}" class="align-middle"></td>
-                            <td th:text="${event.description}" class="align-middle"></td>
-                            <td th:text="${event.timeOfReminder.displayText}" class="align-middle"></td>
-                            <td th:attr="data-event-id=${event.eventId}" class="align-middle"><button type="button" class="btn btn-link">Bearbeiten</button> | <button type="button" class="btn btn-link">Löschen</button></td>
+                        <tr th:each="event: ${events}" th:attr="data-event-id=${event.eventId}">
+                            <td th:text="${#temporals.format(event.date, 'dd.MM.YYYY')}" class="table-event-date align-middle"></td>
+                            <td th:text="${event.description}" class="table-event-description align-middle"></td>
+                            <td th:attr="data-event-reminder=${event.timeOfReminder?.displayText}" th:text="${event.timeOfReminder?.displayText}" class="table-event-reminder align-middle"></td>
+                            <td class="align-middle"><button type="button" class="edit btn btn-link">Bearbeiten</button> | <button type="button" class="delete btn btn-link">Löschen</button></td>
                         </tr>
                     </table>
                 </section>
                 <!-- dynamic event list end -->
-                <section class="p-4">
-                    <div>
-                        <img src="https://picsum.photos/200/150" class="float-lg-end m-2" alt="" />
-                        <h1 class="h2">Lorem Ipsum Text</h1>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. </p>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. </p>
-                        <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-                    </div>
-                </section>
             </div>
         </div>
     </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/calendar.js"></script>
 </body>
 </html>

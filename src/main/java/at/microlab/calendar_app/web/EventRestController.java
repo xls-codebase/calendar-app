@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/events")
 public class EventRestController {
 
@@ -52,6 +53,7 @@ public class EventRestController {
         if (optionalEvent.isPresent()) {
             Event updatedEvent = optionalEvent.get();
             updatedEvent.setDate(eventUpdate.getDate());
+
             updatedEvent.setDescription(eventUpdate.getDescription());
             updatedEvent.setTimeOfReminder(eventUpdate.getTimeOfReminder());
             eventService.save(updatedEvent);

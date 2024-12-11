@@ -22,4 +22,8 @@ public class EventController {
         model.addAttribute("events", events);
         return "index";
     }
+    @GetMapping("/static")
+    public String staticContent(Model model) {
+        return "static";
+    }
 }

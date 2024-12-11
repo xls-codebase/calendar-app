@@ -1,5 +1,7 @@
 package at.microlab.calendar_app.event;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum TimeOfReminder {
     ONE_DAY("1 Tag"),
     TWO_DAYS("2 Tage"),
@@ -13,6 +15,7 @@ public enum TimeOfReminder {
         this.displayText = displayText;
     }
 
+    @JsonValue
     public String getDisplayText() {
         return displayText;
     }
