@@ -2,6 +2,7 @@ package at.microlab.calendar_app.event;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,4 +33,8 @@ public class EventService {
     public Optional<Event> getEvent(Long id) {
         return eventRepository.findById(id);
     }
+
+    public List<Event> getUpcomingEventsWithReminder(LocalDate date) {
+        return eventRepository.findEventsByTimeOfReminderNotNullAndDateGreaterThan(date);
+    };
 }
